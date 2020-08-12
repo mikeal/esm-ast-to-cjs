@@ -1,5 +1,7 @@
 const copy = o => JSON.parse(JSON.stringify(o))
 
+const types = {}
+
 const exportExpression = {
   type: 'AssignmentExpression',
   operator: '=',
@@ -10,8 +12,6 @@ const exportExpression = {
     computed: false
   }
 }
-
-const types = {}
 
 types.ExportDefaultDeclaration = node => {
   const ast = copy(exportExpression)
@@ -26,10 +26,8 @@ types.ExportNamedDeclaration = node => {
     type: 'ObjectExpression',
     properties
   }
-
   for (const specifier of node.specifiers) {
     if (specifier.type !== 'ExportSpecifier') throw new Error('Not implemented')
-    console.log({ specifier })
     const { name } = specifier.local
     if (name === specifier.exported.name) {
       properties.push({
@@ -56,11 +54,71 @@ types.ExportNamedDeclaration = node => {
   return ast
 }
 
+const localId = name => ({ type: 'Identifier', name })
+
+const requireExpression = (id, imported) => ({
+  type: 'VariableDeclaration',
+  kind: 'const',
+  declarations: [{
+    type: 'VariableDeclarator',
+    id,
+    init: {
+      type: 'CallExpression',
+      callee: { type: 'Identifier', name: 'require' },
+      arguments: [{ type: 'Literal', value: imported, raw: `'${imported}'` }]
+    }
+  }]
+})
+
+const propExpression = props => ({
+  type: 'ObjectPattern',
+  properties: props.map(name => ({
+    type: 'Property',
+    method: false,
+    shorthand: true,
+    computed: false,
+    kind: 'init',
+    key: { type: 'Identifier', name },
+    value: { type: 'Identifier', name }
+  }))
+})
+
+types.ImportDeclaration = node => {
+  const imported = node.source.value
+  const statements = []
+  const props = []
+  for (const specifier of node.specifiers) {
+    const { name } = specifier.local
+    if (specifier.type === 'ImportDefaultSpecifier') {
+      if (node.specifiers.length > 1) throw new Error('not implemented')
+      return [requireExpression(localId(name), imported)]
+    } else if (specifier.type === 'ImportSpecifier') {
+      if (name === specifier.imported.name) {
+        props.push(name)
+      } else {
+        throw new Error('not implemented')
+      }
+    } else {
+      throw new Error('not implemented')
+    }
+  }
+  if (props.length) {
+    statements.push(requireExpression(propExpression(props), imported))
+  }
+  return statements
+}
+
 export default ast => {
   let i = 0
   for (const node of ast.body) {
     if (types[node.type]) {
-      ast.body[i] = types[node.type](node)
+      const ret = types[node.type](node)
+      if (Array.isArray(ret)) {
+        ast.body.splice(i, 1, ...ret)
+        i += (ret.length - 1)
+      } else {
+        ast.body[i] = ret
+      }
     } else {
       // console.log(node)
     }

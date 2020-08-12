@@ -10,6 +10,9 @@
   "keywords": [],
   "author": "Mikeal Rogers <mikeal.rogers@gmail.com> (https://www.mikealrogers.com/)",
   "license": "(Apache-2.0 AND MIT)",
+  "standard": {
+    "ignore": [ "test/fixtures" ]
+  },
   "devDependencies": {
     "acorn": "^7.4.0",
     "astring": "^1.4.3",
