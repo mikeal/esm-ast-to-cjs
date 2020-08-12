@@ -30,8 +30,8 @@ types.ExportNamedDeclaration = node => {
   for (const specifier of node.specifiers) {
     if (specifier.type !== 'ExportSpecifier') throw new Error('Not implemented')
     console.log({ specifier })
-    if (specifier.local.name === specifier.exported.name) {
-      const name = specifier.local.name
+    const { name } = specifier.local
+    if (name === specifier.exported.name) {
       properties.push({
         type: 'Property',
         method: false,
@@ -42,7 +42,15 @@ types.ExportNamedDeclaration = node => {
         value: { type: 'Identifier', name }
       })
     } else {
-      throw new Error('Not implemented')
+      properties.push({
+        type: 'Property',
+        method: false,
+        shorthand: false,
+        computed: false,
+        key: { type: 'Identifier', name: specifier.exported.name },
+        kind: 'init',
+        value: { type: 'Identifier', name }
+      })
     }
   }
   return ast
