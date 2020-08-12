@@ -1,0 +1,19 @@
+{
+  "name": "esm-ast-to-cjs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Mikeal Rogers <mikeal.rogers@gmail.com> (https://www.mikealrogers.com/)",
+  "license": "(Apache-2.0 AND MIT)",
+  "devDependencies": {
+    "acorn": "^7.4.0",
+    "astring": "^1.4.3",
+    "estest": "^10.3.0",
+    "standard": "^14.3.4"
+  }
+}
