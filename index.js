@@ -27,7 +27,8 @@ types.ExportNamedDeclaration = node => {
     properties
   }
   for (const specifier of node.specifiers) {
-    if (specifier.type !== 'ExportSpecifier') throw new Error('Not implemented')
+    /* c8 ignore next */
+    if (specifier.type !== 'ExportSpecifier') /* c8 ignore next */ throw new Error('Not implemented')
     const { name } = specifier.local
     if (name === specifier.exported.name) {
       properties.push({
@@ -90,16 +91,21 @@ types.ImportDeclaration = node => {
   for (const specifier of node.specifiers) {
     const { name } = specifier.local
     if (specifier.type === 'ImportDefaultSpecifier') {
-      if (node.specifiers.length > 1) throw new Error('not implemented')
+      /* c8 ignore next */
+      if (node.specifiers.length > 1) /* c8 ignore next */ throw new Error('not implemented')
       return [requireExpression(localId(name), imported)]
     } else if (specifier.type === 'ImportSpecifier') {
       if (name === specifier.imported.name) {
         props.push(name)
-      } else {
+      } /* c8 ignore next */ else {
+        /* c8 ignore next */
         throw new Error('not implemented')
+        /* c8 ignore next */
       }
-    } else {
+    } /* c8 ignore next */ else {
+      /* c8 ignore next */
       throw new Error('not implemented')
+      /* c8 ignore next */
     }
   }
   if (props.length) {
