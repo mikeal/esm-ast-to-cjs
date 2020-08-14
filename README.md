@@ -19,4 +19,4 @@ convert(ast)
 const cjs = astring.generate(ast)
 console.log(cjs)
 // const test = require('test');\nmodule.exports = test'\n
-```js
+```
