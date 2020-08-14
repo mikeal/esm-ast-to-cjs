@@ -1,7 +1,7 @@
 {
   "name": "esm-ast-to-cjs",
   "version": "0.0.0",
-  "description": "",
+  "description": "Pure AST compiler for ESM to CJS",
   "main": "index.js",
   "type": "module",
   "scripts": {
